@@ -39,7 +39,22 @@ const projectsRouter = () => {
 	router.get("/:id/tests", (req, res) => {
 		try {
 			const id = parseInt(req.params.id);
-			const tests = getTestsByProject(id);
+			const status = req.query.status;
+			
+			let tests = getTestsByProject(id);
+			if (status) {
+				tests = tests.filter((test) => {
+					if(test.environments) {
+						for(const env of Object.values(test.environments)) {
+							console.log(env.status + ": " + (env.status === status))
+							if(env.status === status)
+								return true;
+						}
+					}
+					
+					return false;
+				})
+			}
 			if (tests) {
 				res.status(200).send(tests).end();
 			} else {
