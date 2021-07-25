@@ -20,11 +20,11 @@ function InvalidationResult () {
 const invalidationRouter = () => {
 	const router = Router();
 	
-	router.post("/", (req, res) => {
+	router.post("/", async (req, res) => {
 		try {
 			const invalidationResult = req.body;// InvalidationResult
 			const testKeys = invalidationResult.invalidators.map(invalidation => invalidation.value);
-			invalidateTests({
+			await invalidateTests({
 				projectId: invalidationResult.meta.projectId,
 				testKeysArr: testKeys,
 				environmentId: invalidationResult.meta.environmentId,

@@ -1,9 +1,8 @@
 const {updateTestStatus} = require("../../collections/tests");
-const {createNextId} = require("../../collections/tests");
 const {deleteTest} = require("../../collections/tests");
 const {updateTest} = require("../../collections/tests");
 const {addTest} = require("../../collections/tests");
-const {getTests} = require("../../collections/tests");
+const {getTestById} = require("../../collections/tests");
 const {Router} = require("express");
 
 function TestEnvironment() {
@@ -22,16 +21,16 @@ function Test() {
 }
 
 const createTestKey = (test) => {
-	return test.name.replace(/ /g, "-").replace(/\(/g, "").replace(/\)/g, "").toLowerCase() + "-" + test.id;
+	return test.name.replace(/ /g, "-").replace(/\(/g, "").replace(/\)/g, "").toLowerCase() + "-" + test._id;
 };
 
 const testsRouter = () => {
 	const router = Router();
 	
-	router.get("/:id", (req, res) => {
+	router.get("/:id", async (req, res) => {
 		try {
-			const id = parseInt(req.params.id);
-			const test = getTests().find(test => test.id === id);
+			const id = req.params.id;
+			const test = await getTestById(id);
 			if (test) {
 				res.status(200).send(test).end();
 			} else {
@@ -43,34 +42,33 @@ const testsRouter = () => {
 		}
 	});
 	
-	router.post("/", (req, res) => {
+	router.post("/", async (req, res) => {
 		try {
 			const test = req.body;
-			test.id = createNextId();
 			test.testKey = createTestKey(test);
-			addTest(test);
-			res.status(200).send({id: test.id}).end();
+			await addTest(test);
+			res.status(200).send({id: test._id}).end();
 		} catch (e) {
 			console.error(e);
 			res.status(500).end();
 		}
 	});
 	
-	router.put("/", (req, res) => {
+	router.put("/", async (req, res) => {
 		try {
 			const test = req.body;
-			updateTest(test);
-			res.status(200).send({id: test.id}).end();
+			await updateTest(test);
+			res.status(200).send({id: test._id}).end();
 		} catch (e) {
 			console.error(e);
 			res.status(500).end();
 		}
 	});
 	
-	router.put("/status", (req, res) => {
+	router.put("/status", async (req, res) => {
 		try {
 			const status = req.body;
-			updateTestStatus(status);
+			await updateTestStatus(status);
 			res.status(204).send().end();
 		} catch (e) {
 			console.error(e);
@@ -78,10 +76,10 @@ const testsRouter = () => {
 		}
 	});
 	
-	router.delete("/:id", (req, res) => {
+	router.delete("/:id", async (req, res) => {
 		try {
-			const id = parseInt(req.params.id);
-			deleteTest(id);
+			const id = req.params.id;
+			await deleteTest(id);
 			res.status(204).end();
 		} catch (e) {
 			console.error(e);

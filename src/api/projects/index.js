@@ -7,9 +7,9 @@ const {Router} = require("express");
 const projectsRouter = () => {
 	const router = Router();
 	
-	router.get("/", (req, res) => {
+	router.get("/", async (req, res) => {
 		try {
-			const projects = getProjects();
+			const projects = await getProjects();
 			if (projects) {
 				res.status(200).send(projects).end();
 			} else {
@@ -21,10 +21,10 @@ const projectsRouter = () => {
 		}
 	});
 	
-	router.get("/:id", (req, res) => {
+	router.get("/:id", async (req, res) => {
 		try {
 			const id = parseInt(req.params.id);
-			const project = getProjectById(id);
+			const project = await getProjectById(id);
 			if (project) {
 				res.status(200).send(project).end();
 			} else {
@@ -36,12 +36,12 @@ const projectsRouter = () => {
 		}
 	});
 	
-	router.get("/:id/tests", (req, res) => {
+	router.get("/:id/tests", async (req, res) => {
 		try {
-			const id = parseInt(req.params.id);
+			const id = req.params.id;
 			const status = req.query.status;
 			
-			let tests = getTestsByProject(id);
+			let tests = await getTestsByProject(id);
 			if (status) {
 				tests = tests.filter((test) => {
 					if(test.environments) {
@@ -66,10 +66,10 @@ const projectsRouter = () => {
 		}
 	});
 	
-	router.get("/:id/environments", (req, res) => {
+	router.get("/:id/environments", async (req, res) => {
 		try {
-			const id = parseInt(req.params.id);
-			const environments = getEnvironmentsByProjectId(id);
+			const id = req.params.id;
+			const {environments} = await getEnvironmentsByProjectId(id);
 			if (environments) {
 				res.status(200).send(environments).end();
 			} else {

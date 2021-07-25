@@ -1,38 +1,42 @@
-const {createStorage} = require("../../utils/discStorage");
+const {ObjectId} = require("mongodb");
+const {addListener} = require("../../database");
 
-const store = createStorage("projects", []);
+let collection = null;
 
-const sanitizeProject = (project) => {
-	const {environments, ...data} = project;
-	return data;
-}
+addListener(({db}) => {
+	collection = db.collection("projects");
+});
 
-const getProjectById = (id) => store.get().find(project => project.id === id);
-const getProjects = () => store.get().map(sanitizeProject);
-const getEnvironmentsByProjectId = (projectId) => {
-	const project = getProjectById(projectId);
-	if(!project) return null;
-	const {environments} = project;
-	return environments;
-};
-const addEnvironment = (environment) => {
+const getProjectById = async (id) => await collection.findOne({
+	_id: new ObjectId(id)
+});
+
+const getProjects = async () => await collection.find().project({
+	environments: false
+}).limit(5).toArray();
+
+const getEnvironmentsByProjectId = async (projectId) => await collection.findOne({
+	_id: new ObjectId(projectId)
+}, {
+	environments: true,
+	REMOVE: true
+});
+
+const addEnvironment = async (environment) => {
+	environment._id = new ObjectId();
 	const {projectId, ...env} = environment;
-	const project = getProjectById(projectId);
-	let id = null;
-	if(!project.environments) {
-		env.id = id = 'env-0';
-		project.environments = [env];
-	} else {
-		id = `env-${project.environments.length}`;
-		project.environments.push({...env, id});
-	}
-	store.commit();
-	return id;
+	await collection.updateOne({
+		_id: new ObjectId(projectId)
+	}, {
+		$push: {
+			environments: env
+		}
+	});
+	return environment._id;
 };
 
 module.exports = {
 	getProjectById,
-	createNextId: store.createNextId,
 	getProjects,
 	getEnvironmentsByProjectId,
 	addEnvironment

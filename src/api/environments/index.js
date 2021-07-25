@@ -11,10 +11,10 @@ function Environment () {
 const environmentRouter = () => {
 	const router = Router();
 	
-	router.post("/", (req, res) => {
+	router.post("/", async (req, res) => {
 		try {
 			const environment = req.body;
-			const id = addEnvironment(environment);
+			const id = await addEnvironment(environment);
 			res.status(200).send({id}).end();
 		} catch (e) {
 			console.error(e);

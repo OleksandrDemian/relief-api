@@ -1,89 +1,89 @@
-const {createStorage} = require("../../utils/discStorage");
+const {ObjectId} = require("mongodb");
+const {addListener} = require("../../database");
 
-const store = createStorage("tests", []);
+let collection = null;
 
-const addTest = (test) => {
-	store.update((data) => [...data, test]);
-	store.commit();
+addListener(({db}) => {
+	collection = db.collection("tests");
+});
+
+const addTest = async (test) => {
+	await collection.insertOne(test);
 };
 
-const updateTest = (test) => {
-	store.update((data) => data.map(t => t.id === test.id ? test : t));
-	store.commit();
+const updateTest = async (test) => {
+	await collection.updateOne({
+		_id: new ObjectId(test._id)
+	}, test);
 };
 
-const deleteTest = (id) => {
-	store.update((data) => data.filter(test => test.id !== id));
-	store.commit();
+const deleteTest = async (id) => {
+	await collection.deleteOne({
+		_id: new ObjectId(id)
+	});
 };
 
-const getTestById = (id) => store.get().find(test => test.id === id);
+const getTestById = async (id) => await collection.findOne({
+	_id: new ObjectId(id)
+});
 
-const getTestsByProject = (id) => store.get().filter(test => test.projectId === id);
+const getTestsByProject = async (id) => await collection.find({
+	projectId: id
+}).toArray();
 
-const getTests = () => store.get();
-
+// todo
 const invalidateTests = ({projectId, testKeysArr, environmentId, timestamp}) => {
-	const tests = store.get().filter(test => test.projectId === projectId && testKeysArr.includes(test.testKey));
-	for (const test of tests) {
-		if(test.environments == null) test.environments = {};
-		
-		if (test.environments[environmentId]) {
-			test.environments[environmentId].history.push({
-				timestamp: timestamp,
-				status: "pending"
-			});
-			test.environments[environmentId].status = "pending";
-		} else {
-			test.environments[environmentId] = {
-				status: status,
-				history: [
-					{
-						timestamp: timestamp,
-						status: "pending"
-					}
-				]
-			};
-		}
-	}
-	
-	store.commit();
+// 	const tests = store.get().filter(test => test.projectId === projectId && testKeysArr.includes(test.testKey));
+// 	for (const test of tests) {
+// 		if(test.environments == null) test.environments = {};
+//
+// 		if (test.environments[environmentId]) {
+// 			test.environments[environmentId].history.push({
+// 				timestamp: timestamp,
+// 				status: "pending"
+// 			});
+// 			test.environments[environmentId].status = "pending";
+// 		} else {
+// 			test.environments[environmentId] = {
+// 				status: status,
+// 				history: [
+// 					{
+// 						timestamp: timestamp,
+// 						status: "pending"
+// 					}
+// 				]
+// 			};
+// 		}
+// 	}
+//
+// 	store.commit();
 }
 
-const updateTestStatus = ({ testId, envId, status }) => {
-	const test = getTestById(testId);
-	
-	if(test.environments == null) test.environments = {};
-	
-	if (test.environments[envId]) {
-		test.environments[envId].history.push({
-			timestamp: Date.now(),
-			status
-		});
-		test.environments[envId].status = status;
-	} else {
-		test.environments[envId] = {
-			status: status,
-			history: [
-				{
+const updateTestStatus = async ({testId, envId, status}) => {
+	const id = new ObjectId(testId)
+	await collection.updateOne({
+			_id: id
+		},
+		{
+			$set: {
+				[`environments.${envId}.status`]: status
+			},
+			$push: {
+				[`environments.${envId}.history`]: {
 					timestamp: Date.now(),
 					status
 				}
-			]
-		};
-	}
-	
-	store.commit();
+			}
+		}
+	);
 };
 
 module.exports = {
 	addTest,
 	getTestById,
 	getTestsByProject,
-	getTests,
 	updateTest,
 	deleteTest,
-	createNextId: () => store.createNextId(),
 	invalidateTests,
 	updateTestStatus
 }

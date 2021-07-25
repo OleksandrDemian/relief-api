@@ -1,6 +1,7 @@
 const express = require("express");
 const bodyParser = require("express");
 const cors = require("cors");
+const {start} = require("./database");
 const {invalidationRouter} = require("./api/invalidator");
 const {environmentRouter} = require("./api/environments");
 const {projectsRouter} = require("./api/projects");
@@ -14,6 +15,8 @@ app.use(bodyParser.json());
 app.use(cors());
 
 const setup = async () => {
+	await start();
+	
 	app.use('/tests', testsRouter());
 	app.use('/projects', projectsRouter());
 	app.use('/environments', environmentRouter());
