@@ -1,8 +1,8 @@
 const {MongoClient} = require("mongodb");
 const registerShutdown = require("../utils/registerShutdown");
 
-// const uri = "mongodb+srv://vigo-test-user:vigo-test-password@cluster0.g5nqm.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
-const uri = "mongodb://localhost:27017/?readPreference=primary&ssl=false";
+const uri = "mongodb+srv://relief-test-user:relief-test-password@cluster0.stusi.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
+// const uri = "mongodb://localhost:27017/?readPreference=primary&ssl=false";
 
 const state = {
 	client: new MongoClient(uri),
