@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Body,
+  Param,
+  Get,
+  Post,
+  Patch,
+  Delete,
+} from '@nestjs/common';
 import { EnvironmentsService } from './environments.service';
 import { CreateEnvironmentDto } from './dto/create-environment.dto';
 import { UpdateEnvironmentDto } from './dto/update-environment.dto';
@@ -23,7 +31,10 @@ export class EnvironmentsController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateEnvironmentDto: UpdateEnvironmentDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateEnvironmentDto: UpdateEnvironmentDto,
+  ) {
     return this.environmentsService.update(+id, updateEnvironmentDto);
   }
 

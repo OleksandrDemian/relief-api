@@ -22,10 +22,12 @@
     "@nestjs/common": "^8.0.5",
     "@nestjs/core": "^8.0.5",
     "@nestjs/mapped-types": "*",
+    "@nestjs/mongoose": "^8.0.0",
     "@nestjs/platform-fastify": "^8.0.5",
+    "mongoose": "^5.13.5",
     "reflect-metadata": "^0.1.13",
-    "rxjs": "^7.3.0",
-    "rimraf": "^3.0.2"
+    "rimraf": "^3.0.2",
+    "rxjs": "^7.3.0"
   },
   "devDependencies": {
     "@nestjs/cli": "^8.0.0",

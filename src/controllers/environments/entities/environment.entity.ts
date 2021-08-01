@@ -1,4 +1,4 @@
-export type EnvironmentHistoryEntry = {
+export class EnvironmentHistoryEntry {
   status: string;
   userId: string;
   timestamp: number;
