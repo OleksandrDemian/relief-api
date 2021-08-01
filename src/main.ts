@@ -17,6 +17,6 @@ async function bootstrap() {
       'https://relief-app-dev.oleksandrdemian.tech',
     ],
   });
-  await app.listen(3099);
+  await app.listen(process.env.PORT || 3099);
 }
 bootstrap();
