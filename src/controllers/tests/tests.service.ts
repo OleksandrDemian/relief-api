@@ -6,11 +6,6 @@ import { Model } from 'mongoose';
 import { Test } from './entities/test.entity';
 import { UpdateTestStatusDto } from './dto/update-test-status.dto';
 
-type TestsFilter = {
-  projectId: string;
-  status?: string;
-};
-
 @Injectable()
 export class TestsService {
   constructor(
@@ -23,10 +18,11 @@ export class TestsService {
   }
 
   async findAll(projectId: string, status: string): Promise<Test[]> {
-    const filter: TestsFilter = { projectId };
-    if (status) {
-      filter.status = status;
+    const filter: any = { projectId };
+    if (status != null) {
+      filter['environments.status'] = status;
     }
+
     return this.testModel.find(filter);
   }
 
@@ -39,14 +35,18 @@ export class TestsService {
   }
 
   async updateStatus(id: string, updateTestDto: UpdateTestStatusDto) {
+    console.log(updateTestDto);
     return this.testModel.updateOne(
-      { _id: id },
+      {
+        _id: id,
+        'environments.envId': updateTestDto.envId,
+      },
       {
         $set: {
-          [`environments.${updateTestDto.envId}.status`]: updateTestDto.status,
+          [`environments.$.status`]: updateTestDto.status,
         },
         $push: {
-          [`environments.${updateTestDto.envId}.history`]: {
+          [`environments.$.history`]: {
             timestamp: Date.now(),
             status: updateTestDto.status,
           },

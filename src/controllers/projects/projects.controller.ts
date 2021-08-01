@@ -49,5 +49,12 @@ export class ProjectsController {
     return this.projectsService.createEnvironment(projectId, environment);
   }
 
+  @Get(':id/environments')
+  async getEnvironments(@Param('id') projectId: string) {
+    // todo: remove this method (update client) or do something with this
+    const { environments } = await this.findOne(projectId);
+    return environments;
+  }
+
   // todo: patch environments
 }
