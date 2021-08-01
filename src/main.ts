@@ -10,13 +10,7 @@ async function bootstrap() {
     AppModule,
     new FastifyAdapter(),
   );
-  app.enableCors({
-    origin: [
-      'http://localhost:3000',
-      'https://gracious-murdock-814e34.netlify.app',
-      'https://relief-app-dev.oleksandrdemian.tech',
-    ],
-  });
+  app.enableCors();
   await app.listen(process.env.PORT || 3099);
 }
 bootstrap();

@@ -35,22 +35,25 @@ export class TestsService {
   }
 
   async updateStatus(id: string, updateTestDto: UpdateTestStatusDto) {
-    console.log(updateTestDto);
     return this.testModel.updateOne(
-      {
-        _id: id,
-        'environments.envId': updateTestDto.envId,
-      },
+      { _id: id },
       {
         $set: {
-          [`environments.$.status`]: updateTestDto.status,
+          [`environments.$[elem].status`]: updateTestDto.status,
         },
         $push: {
-          [`environments.$.history`]: {
+          [`environments.$[elem].history`]: {
             timestamp: Date.now(),
             status: updateTestDto.status,
           },
         },
+      },
+      {
+        arrayFilters: [
+          {
+            'elem.envId': updateTestDto.envId,
+          },
+        ],
       },
     );
   }
