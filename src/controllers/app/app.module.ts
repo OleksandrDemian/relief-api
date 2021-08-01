@@ -3,7 +3,6 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TestsModule } from '../tests/tests.module';
 import { ProjectsModule } from '../projects/projects.module';
-import { EnvironmentsModule } from '../environments/environments.module';
 import { InvalidatorsModule } from '../invalidators/invalidators.module';
 import { MongooseModule } from '@nestjs/mongoose';
 
@@ -13,7 +12,6 @@ import { MongooseModule } from '@nestjs/mongoose';
   imports: [
     TestsModule,
     ProjectsModule,
-    EnvironmentsModule,
     InvalidatorsModule,
     MongooseModule.forRoot(
       'mongodb+srv://relief-test-user:relief-test-password@cluster0.stusi.mongodb.net/relief-mongoose-dev?retryWrites=true&w=majority',

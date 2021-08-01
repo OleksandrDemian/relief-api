@@ -3,7 +3,6 @@ import { Environment } from '../../environments/entities/environment.entity';
 
 @Schema()
 export class Test {
-  @Prop()
   _id: string;
   @Prop()
   name: string;

@@ -10,6 +10,7 @@ import {
 import { ProjectsService } from './projects.service';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
+import { CreateEnvironmentDto } from '../environments/dto/create-environment.dto';
 
 @Controller('projects')
 export class ProjectsController {
@@ -39,4 +40,14 @@ export class ProjectsController {
   remove(@Param('id') id: string) {
     return this.projectsService.remove(id);
   }
+
+  @Post(':id/environment')
+  addEnvironment(
+    @Param('id') projectId: string,
+    @Body() environment: CreateEnvironmentDto,
+  ) {
+    return this.projectsService.createEnvironment(projectId, environment);
+  }
+
+  // todo: patch environments
 }
