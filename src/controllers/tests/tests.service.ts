@@ -35,6 +35,7 @@ export class TestsService {
   }
 
   async updateStatus(id: string, updateTestDto: UpdateTestStatusDto) {
+    // todo: refactor this or check if it is ok for performance
     return this.testModel.updateOne(
       { _id: id },
       {
