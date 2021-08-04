@@ -36,14 +36,14 @@ export class TestsService {
 
   async updateStatus(id: string, updateTestDto: UpdateTestStatusDto) {
     // todo: refactor this or check if it is ok for performance
-    return this.testModel.updateOne(
+    const result = await this.testModel.updateOne(
       { _id: id },
       {
         $set: {
-          [`environments.$[elem].status`]: updateTestDto.status,
+          'environments.$[elem].status': updateTestDto.status,
         },
         $push: {
-          [`environments.$[elem].history`]: {
+          'environments.$[elem].history': {
             timestamp: Date.now(),
             status: updateTestDto.status,
           },
@@ -57,6 +57,25 @@ export class TestsService {
         ],
       },
     );
+
+    if (result.nModified === 0) {
+      // if no files were updated it means that the environment is not created yet
+      // create environment
+      // todo: check if there is a way to do upsert instead of running the query again
+      return this.testModel.updateOne(
+        { _id: id },
+        {
+          $push: {
+            environments: {
+              ...updateTestDto,
+              history: [],
+            },
+          },
+        },
+      );
+    }
+
+    return result;
   }
 
   async remove(id: string) {
