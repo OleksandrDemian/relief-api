@@ -4,8 +4,14 @@ export class EnvironmentHistoryEntry {
   timestamp: number;
 }
 
+export class Repo {
+  url: string;
+  branch: string;
+}
+
 export class Environment {
   envId: string;
   status: string;
+  repos: Repo[];
   history: EnvironmentHistoryEntry[];
 }

@@ -21,6 +21,12 @@ export class ProjectsService {
     return this.projectModel.find();
   }
 
+  async findByRepo(repoUrl: string): Promise<Project[]> {
+    return this.projectModel.find({
+      'environments.repos.url': repoUrl,
+    });
+  }
+
   async findOne(id: string) {
     return this.projectModel.findById(id);
   }

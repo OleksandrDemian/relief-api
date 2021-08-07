@@ -6,6 +6,7 @@ import {
   Post,
   Patch,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { ProjectsService } from './projects.service';
 import { CreateProjectDto } from './dto/create-project.dto';
@@ -24,6 +25,11 @@ export class ProjectsController {
   @Get()
   findAll() {
     return this.projectsService.findAll();
+  }
+
+  @Get('/byRepo')
+  findByRepo(@Query('repoUrl') repoUrl) {
+    return this.projectsService.findByRepo(repoUrl);
   }
 
   @Get(':id')
