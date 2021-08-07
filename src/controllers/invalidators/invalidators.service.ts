@@ -2,15 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { CreateInvalidatorDto } from './dto/create-invalidator.dto';
 import { UpdateInvalidatorDto } from './dto/update-invalidator.dto';
 import { ProcessInvalidationResult } from './dto/process-invalidation-result';
-import { InjectModel } from '@nestjs/mongoose';
-import { Test } from '../tests/entities/test.entity';
-import { Model } from 'mongoose';
+import { TestsService } from '../tests/tests.service';
 
 @Injectable()
 export class InvalidatorsService {
-  constructor(
-    @InjectModel(Test.name) private testModel: Model<Test & Document>,
-  ) {}
+  constructor(private readonly testsService: TestsService) {}
 
   create(createInvalidatorDto: CreateInvalidatorDto) {
     return 'This action adds a new invalidator';
@@ -19,8 +15,15 @@ export class InvalidatorsService {
   async processInvalidationResult(
     processInvalidationResult: ProcessInvalidationResult,
   ) {
-    // todo process invalidation: update invalidated test across multiple projects
-    console.log(JSON.stringify(processInvalidationResult));
+    // todo move to bulk update
+    // the problem now is that we must run update, and if no documents where updated, the run insert
+    // todo !REFACTOR THIS
+    for (const invalidator of processInvalidationResult.invalidators) {
+      await this.testsService.updateStatus(invalidator.value, {
+        envId: processInvalidationResult.environments[0].envId,
+        status: invalidator.status,
+      });
+    }
     return null;
   }
 

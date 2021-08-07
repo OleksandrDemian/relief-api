@@ -36,6 +36,8 @@ export class TestsService {
 
   async updateStatus(id: string, updateTestDto: UpdateTestStatusDto) {
     // todo: refactor this or check if it is ok for performance
+    // todo !REFACTOR THIS
+    // (see also {InvalidatorsService.processInvalidationResult})
     const result = await this.testModel.updateOne(
       { _id: id },
       {

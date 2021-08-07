@@ -15,5 +15,6 @@ import { Test } from './entities/test.entity';
       },
     ]),
   ],
+  exports: [TestsService],
 })
 export class TestsModule {}

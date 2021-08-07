@@ -21,7 +21,7 @@ export class InvalidatorsController {
     return this.invalidatorsService.create(createInvalidatorDto);
   }
 
-  @Post('/process')
+  @Post('/process-result')
   processInvalidationResult(
     @Body() processInvalidationResult: ProcessInvalidationResult,
   ) {
