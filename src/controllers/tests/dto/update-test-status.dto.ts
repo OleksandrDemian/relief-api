@@ -1,4 +1,4 @@
 export class UpdateTestStatusDto {
-  envId: string;
+  _id: string;
   status: string;
 }

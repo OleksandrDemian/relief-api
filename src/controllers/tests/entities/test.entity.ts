@@ -1,5 +1,5 @@
 import { Prop, Schema } from '@nestjs/mongoose';
-import { Environment } from '../../environments/entities/environment.entity';
+import { TestEnvironment } from '../../environments/entities/environment.entity';
 
 @Schema()
 export class Test {
@@ -13,5 +13,5 @@ export class Test {
   @Prop()
   projectId: string;
   @Prop()
-  environments: Environment[];
+  environments: TestEnvironment[];
 }

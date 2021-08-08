@@ -54,7 +54,7 @@ export class TestsService {
       {
         arrayFilters: [
           {
-            'elem.envId': updateTestDto.envId,
+            'elem._id': updateTestDto._id,
           },
         ],
       },

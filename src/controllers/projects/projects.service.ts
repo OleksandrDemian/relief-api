@@ -5,6 +5,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Project } from './entities/project.entity';
 import { Model, Types } from 'mongoose';
 import { CreateEnvironmentDto } from '../environments/dto/create-environment.dto';
+import { UpdateEnvironmentDto } from './dto/update-environment.dto';
 
 @Injectable()
 export class ProjectsService {
@@ -49,7 +50,40 @@ export class ProjectsService {
         $push: {
           environments: {
             ...environment,
-            _id: Types.ObjectId(),
+            _id: Types.ObjectId().toHexString(),
+          },
+        },
+      },
+    );
+  }
+
+  async updateEnvironment(
+    projectId: string,
+    environmentId: string,
+    environment: UpdateEnvironmentDto,
+  ) {
+    return this.projectModel.updateOne(
+      {
+        _id: projectId,
+        'environments._id': environmentId,
+      },
+      {
+        $set: {
+          'environments.$': environment,
+        },
+      },
+    );
+  }
+
+  async deleteEnvironment(projectId: string, environmentId: string) {
+    return this.projectModel.updateOne(
+      {
+        _id: projectId,
+      },
+      {
+        $pull: {
+          environments: {
+            _id: environmentId,
           },
         },
       },

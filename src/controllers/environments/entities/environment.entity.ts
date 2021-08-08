@@ -10,8 +10,14 @@ export class Repo {
 }
 
 export class Environment {
-  envId: string;
+  _id: string;
   status: string;
+}
+
+export class ProjectEnvironment extends Environment {
   repos: Repo[];
+}
+
+export class TestEnvironment extends Environment {
   history: EnvironmentHistoryEntry[];
 }

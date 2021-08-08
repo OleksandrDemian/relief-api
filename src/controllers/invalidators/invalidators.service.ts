@@ -20,7 +20,7 @@ export class InvalidatorsService {
     // todo !REFACTOR THIS
     for (const invalidator of processInvalidationResult.invalidators) {
       await this.testsService.updateStatus(invalidator.value, {
-        envId: processInvalidationResult.environments[0].envId,
+        _id: processInvalidationResult.environments[0]._id,
         status: invalidator.status,
       });
     }

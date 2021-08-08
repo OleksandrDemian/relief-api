@@ -3,7 +3,7 @@ class InvalidationResultMeta {
 }
 
 class InvalidationEnvironment {
-  envId: string;
+  _id: string;
   projectId: string;
 }
 
