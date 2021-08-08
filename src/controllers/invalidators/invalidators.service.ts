@@ -16,12 +16,10 @@ export class InvalidatorsService {
     processInvalidationResult: ProcessInvalidationResult,
   ) {
     // todo move to bulk update
-    // the problem now is that we must run update, and if no documents where updated, the run insert
-    // todo !REFACTOR THIS
     for (const invalidator of processInvalidationResult.invalidators) {
       await this.testsService.updateStatus(invalidator.value, {
-        _id: processInvalidationResult.environments[0]._id,
         status: invalidator.status,
+        userId: null,
       });
     }
     return null;

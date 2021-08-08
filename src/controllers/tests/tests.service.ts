@@ -13,14 +13,22 @@ export class TestsService {
   ) {}
 
   async create(createTestDto: CreateTestDto): Promise<Test> {
-    const test = new this.testModel(createTestDto);
+    const test = new this.testModel({
+      statusHistory: [],
+      status: {
+        status: 'pending',
+        timestamp: Date.now(),
+        userId: null,
+      },
+      ...createTestDto,
+    });
     return test.save();
   }
 
   async findAll(projectId: string, status: string): Promise<Test[]> {
     const filter: any = { projectId };
     if (status != null) {
-      filter['environments.status'] = status;
+      filter['status.status'] = status;
     }
 
     return this.testModel.find(filter);
@@ -35,49 +43,23 @@ export class TestsService {
   }
 
   async updateStatus(id: string, updateTestDto: UpdateTestStatusDto) {
-    // todo: refactor this or check if it is ok for performance
-    // todo !REFACTOR THIS
     // (see also {InvalidatorsService.processInvalidationResult})
-    const result = await this.testModel.updateOne(
+    const newStatus = {
+      ...updateTestDto,
+      timestamp: Date.now(),
+    };
+
+    return this.testModel.updateOne(
       { _id: id },
       {
         $set: {
-          'environments.$[elem].status': updateTestDto.status,
+          status: newStatus,
         },
         $push: {
-          'environments.$[elem].history': {
-            timestamp: Date.now(),
-            status: updateTestDto.status,
-          },
+          statusHistory: newStatus,
         },
-      },
-      {
-        arrayFilters: [
-          {
-            'elem._id': updateTestDto._id,
-          },
-        ],
       },
     );
-
-    if (result.nModified === 0) {
-      // if no files were updated it means that the environment is not created yet
-      // create environment
-      // todo: check if there is a way to do upsert instead of running the query again
-      return this.testModel.updateOne(
-        { _id: id },
-        {
-          $push: {
-            environments: {
-              ...updateTestDto,
-              history: [],
-            },
-          },
-        },
-      );
-    }
-
-    return result;
   }
 
   async remove(id: string) {

@@ -1,4 +1,4 @@
 export class UpdateTestStatusDto {
-  _id: string;
   status: string;
+  userId: string;
 }

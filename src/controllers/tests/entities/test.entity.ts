@@ -1,5 +1,5 @@
 import { Prop, Schema } from '@nestjs/mongoose';
-import { TestEnvironment } from '../../environments/entities/environment.entity';
+import { TestStatusHistory } from './testStatusHistory.entity';
 
 @Schema()
 export class Test {
@@ -13,5 +13,7 @@ export class Test {
   @Prop()
   projectId: string;
   @Prop()
-  environments: TestEnvironment[];
+  statusHistory: TestStatusHistory[];
+  @Prop()
+  status: TestStatusHistory;
 }

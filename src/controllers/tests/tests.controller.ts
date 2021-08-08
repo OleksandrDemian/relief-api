@@ -57,9 +57,9 @@ export class TestsController {
   @Patch(':id/status')
   updateStatus(
     @Param('id') id: string,
-    @Body() updateTestDto: UpdateTestStatusDto,
+    @Body() updateTestStatusDto: UpdateTestStatusDto,
   ) {
-    return this.testsService.updateStatus(id, updateTestDto);
+    return this.testsService.updateStatus(id, updateTestStatusDto);
   }
 
   @Delete(':id')
