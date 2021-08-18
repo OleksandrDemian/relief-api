@@ -13,10 +13,7 @@ import { MongooseModule } from '@nestjs/mongoose';
     TestsModule,
     ProjectsModule,
     InvalidatorsModule,
-    MongooseModule.forRoot(
-      'mongodb+srv://relief-test-user:relief-test-password@cluster0.stusi.mongodb.net/relief-mongoose-dev?retryWrites=true&w=majority',
-    ),
-    // local MongooseModule.forRoot('mongodb://localhost:27017/?readPreference=primary&ssl=false')
+    MongooseModule.forRoot('mongodb://localhost:27017/?readPreference=primary&ssl=false'),
   ],
 })
 export class AppModule {}
